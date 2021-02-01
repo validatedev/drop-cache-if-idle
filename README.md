@@ -1,5 +1,5 @@
 # drop-cache-if-idle
-The tool doesn't interrupt your processes, drops the cache if and only if the machine is idle.
+The tool which doesn't interrupt your processes, drops the cache if and only if the machine is idle.
 
 ### Why?
 In WSL2 (Windows Subsystem for Linux, version 2), there's a bug https://github.com/microsoft/WSL/issues/4166. Due to that issue, WSL2 doesn't return the cache, instead, the amount of cache grows until the WSL2 instance's assigned RAM is full. Well, you can simply drop the cache. But, there would be a problem for the speed of your process. Instead, the script makes sure that the WSL2 instance is idle, then drops the cache. With that approach, we could eliminate the speed issue, for some of the cases.
