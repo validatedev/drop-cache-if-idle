@@ -14,4 +14,4 @@ In WSL2 (Windows Subsystem for Linux, version 2), there's a bug https://github.c
 7. Then, run `wsl --shutdown` on cmd.exe. This will shut all of your instances of WSL2 down.
 
 ### References
-Thanks to the commenter https://github.com/microsoft/WSL/issues/4166#issuecomment-618159162 and repo https://github.com/AdnanHodzic/auto-cpufreq for providing the related information used in this repo. 
+Thanks to the comment https://github.com/microsoft/WSL/issues/4166#issuecomment-618159162 and repo https://github.com/AdnanHodzic/auto-cpufreq for providing the related information used in this repo. 
