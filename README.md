@@ -10,7 +10,7 @@ In WSL2 (Windows Subsystem for Linux, version 2), there's a [bug](https://github
 3. Copy `drop_cache_if_idle` file on one of your `$PATH`, for example `/usr/bin/`.
 4. On your WSL bash execute `sudo crontab -e -u root` and add the following line: `*/3 * * * * drop_cache_if_idle`. The "*/3" means that it will be executed every 3 minutes. You can change it if you wish.
 5. On your `~/.bashrc` add the following line: `[ -z "$(ps -ef | grep cron | grep -v grep)" ] && sudo /etc/init.d/cron start &> /dev/null`
-6. On your WSL bash execute $ sudo visudo and add the following line: `%sudo ALL=NOPASSWD: /etc/init.d/cron start`
+6. On your WSL bash execute `sudo visudo` and add the following line: `%sudo ALL=NOPASSWD: /etc/init.d/cron start`
 7. Then, run `wsl --shutdown` on cmd.exe. This will shut all of your instances of WSL2 down.
 
 ### References
