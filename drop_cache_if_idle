@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 #
 # Drop the cache and inodes, if and only if the CPU usage is low
+# Author: Mert Can Demir (validate)
 
 import os
 import psutil
 import subprocess
+import time
+
+CPU_COUNT = os.cpu_count()
+LOAD_THRESHOLD = (75 * CPU_COUNT) / 100
 
 def root_check():
     if not os.geteuid() == 0:
         print("ERROR: Root access is not granted.")
         exit(1)
 
-def load_and_apply_check():
-    cpucount = os.cpu_count()
-    load_threshold = (75*cpucount)/100
-
+def load_check():
+    print(f"INFO: The count of threads is {CPU_COUNT}")
     cpuload_all_cores = psutil.cpu_percent(percpu=True, interval=0.1)
     cpuload_core_max = max(cpuload_all_cores)
 
@@ -22,21 +25,58 @@ def load_and_apply_check():
     load1m, _, _ = os.getloadavg()
 
     if cpuload_avg >= 10 or cpuload_core_max >= 30:
-        print("INFO: CPU load detected, don't apply.")
-    elif load1m > load_threshold:
-        print("INFO: System load detected, don't apply.")
+        print("INFO: CPU load detected, the command is not going to be executed.")
+        return False
+    elif load1m > LOAD_THRESHOLD:
+        print("INFO: System load detected, the command is not going to be executed.")
+        return False
     else:
+        return True
+
+def last_run_check():
+    try:
+        mod_time_since_epoch = os.path.getmtime('/root/drop_caches_last_run')
+        current_time_since_epoch = time.time()
+        last_run_time_in_seconds = current_time_since_epoch - mod_time_since_epoch
+        print(f"INFO: The last run was before {int(last_run_time_in_seconds)} seconds")
+
+    except OSError:
+        print("INFO: Path '/root/drop_caches_last_run' does not exists or is inaccessible. Continuing...")
+    
+    except Exception as e:
+        print(f"ERROR: The last run of the command is cannot be checked due to an unknown cause: {e}")
+
+def apply():
+    try:
         out = subprocess.run("sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run", shell=True)
+    except Exception as e:
+        print(f"ERROR: The command is cannot be executed due to an unknown cause: {e}")
+        return False
+    else:
         if isinstance(out,subprocess.CompletedProcess):
             print("INFO: No CPU load, the command is executed successfully.")
+            return True
         else:
-            print("INFO: No CPU load, the command is not executed.")
+            print("ERROR: No CPU load, the command is not executed:")
             print(out)
+            return False
 
 def main():
     root_check()
-    load_and_apply_check()
-    print("SUCCESS: The operation is completed successfully.")
+    last_run_check()
+
+    # Check load and execute if load is low
+    is_apply_succeed = False
+    if load_check():
+        is_apply_succeed = apply()
+
+    # Let's give the proper output to the user in case of failure
+    if is_apply_succeed:
+        print("INFO: The command is executed successfully.")
+    else:
+        print("INFO: There was an error preventing the command being executed.")
+
     exit(0)
 
-main()
+if __name__ == "__main__":
+    main()
