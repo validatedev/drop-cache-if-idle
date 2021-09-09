@@ -11,10 +11,12 @@ import time
 CPU_COUNT = os.cpu_count()
 LOAD_THRESHOLD = (75 * CPU_COUNT) / 100
 
+
 def root_check():
     if not os.geteuid() == 0:
         print("ERROR: Root access is not granted.")
         exit(1)
+
 
 def load_check():
     print(f"INFO: The count of threads is {CPU_COUNT}")
@@ -33,33 +35,39 @@ def load_check():
     else:
         return True
 
+
 def last_run_check():
     try:
         mod_time_since_epoch = os.path.getmtime('/root/drop_caches_last_run')
         current_time_since_epoch = time.time()
         last_run_time_in_seconds = current_time_since_epoch - mod_time_since_epoch
-        print(f"INFO: The last run was before {int(last_run_time_in_seconds)} seconds")
+        print(
+            f"INFO: The last run was before {round(last_run_time_in_seconds)} {'second' if round(last_run_time_in_seconds) <= 1 else 'seconds'}.")
 
     except OSError:
         print("INFO: Path '/root/drop_caches_last_run' does not exists or is inaccessible. Continuing...")
-    
     except Exception as e:
-        print(f"ERROR: The last run of the command is cannot be checked due to an unknown cause: {e}")
+        print(
+            f"ERROR: The last run of the command is cannot be checked due to an unknown cause: {e}")
+
 
 def apply():
     try:
-        out = subprocess.run("sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run", shell=True)
+        out = subprocess.run(
+            "sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run", shell=True)
     except Exception as e:
-        print(f"ERROR: The command is cannot be executed due to an unknown cause: {e}")
+        print(
+            f"ERROR: The command is cannot be executed due to an unknown cause: {e}")
         return False
     else:
-        if isinstance(out,subprocess.CompletedProcess):
+        if isinstance(out, subprocess.CompletedProcess):
             print("INFO: No CPU load, the command is executed successfully.")
             return True
         else:
             print("ERROR: No CPU load, the command is not executed:")
             print(out)
             return False
+
 
 def main():
     root_check()
@@ -77,6 +85,7 @@ def main():
         print("INFO: There was an error preventing the command being executed.")
 
     exit(0)
+
 
 if __name__ == "__main__":
     main()
