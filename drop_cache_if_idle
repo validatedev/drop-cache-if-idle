@@ -19,7 +19,7 @@ def root_check():
 
 
 def load_check():
-    print(f"INFO: The count of threads is {CPU_COUNT}")
+    print(f"INFO: The count of logical processors is {CPU_COUNT}")
     cpuload_all_cores = psutil.cpu_percent(percpu=True, interval=0.1)
     cpuload_core_max = max(cpuload_all_cores)
 
