@@ -78,11 +78,11 @@ def main():
     if load_check():
         is_apply_succeed = apply()
 
-    # Let's give the proper output to the user in case of failure
-    if is_apply_succeed:
-        print("INFO: The command is executed successfully.")
-    else:
-        print("INFO: There was an error preventing the command being executed.")
+        # Let's give the proper output to the user in case of failure
+        if is_apply_succeed:
+            print("INFO: The command is executed successfully.")
+        else:
+            print("INFO: There was an error preventing the command being executed.")
 
     exit(0)
 
