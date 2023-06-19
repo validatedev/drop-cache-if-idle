@@ -17,4 +17,6 @@ In WSL2 (Windows Subsystem for Linux, version 2), there's a [bug](https://github
 Thanks to the comment [comment on the issue of WSL repository](https://github.com/microsoft/WSL/issues/4166#issuecomment-618159162) and repo [AdnanHodzic/auto-cpufreq](https://github.com/AdnanHodzic/auto-cpufreq) for providing the related information used in this repo. 
 
 ### Notes
-Also, you can use [arkane-systems/wsl-drop-cache]( https://github.com/arkane-systems/wsl-drop-cache). This is a systemd-based implementation of that package, using the same underlying Python script, but modified to run from a systemd timer and to be installed using an apt package. 
+Also, you can use [arkane-systems/wsl-drop-cache](https://github.com/arkane-systems/wsl-drop-cache). This is a systemd-based implementation of that package, using the same underlying Python script, but modified to run from a systemd timer and to be installed using an apt package. 
+
+Additionally, it appears that the individuals at Microsoft have implemented something similar to what this script does in [WSL2/1.3.10](https://github.com/microsoft/WSL/releases/tag/1.3.10). Therefore, you have the option to utilize that approach instead of this project.
